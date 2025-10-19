@@ -1,0 +1,66 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# 환경 설정 파일 (보안정보 포함)
+application.yml
+application-*.yml
+.env
+
+### System files ###
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Gradle test & report outputs (빌드 / 테스트 결과물 제외)
+/reports/
+/test-results/
+/build/reports/
+/build/test-results/
+
+# Logs (로그/임시파일 제외)
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Gradle local caches (gradle 캐시 중복 방지)
+gradle/
+!gradle/wrapper/gradle-wrapper.properties
