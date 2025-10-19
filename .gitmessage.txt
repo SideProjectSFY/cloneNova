@@ -1,0 +1,31 @@
+Type : Subject 
+
+- Summary 
+
+# 아래 주석은 커밋 메시지 작성 시 참고 후 지우고 push 
+# Required - Type: Subject
+
+# Type : Feat|Fix|Refactor|Test|Chore
+# Subject : Commit에 대한 제목
+# Summary : Commit에 대한 요약
+
+#예시)
+# feat: 로그인 API 구현
+# fix: 회원가입 시 비밀번호 검증 오류 수정
+
+# -------------------------
+# 제목(Subject): 50자 이내 요약 (명령문 형태)
+# 본문(Body): 변경 이유, 주요 수정사항 (한 줄 띄고 작성)
+# 꼬리말(Footer): 이슈 트래커 번호나 참고사항
+
+#####
+# <Type 리스트>
+# Feat : 새로운 기능 추가
+# Fix : 버그 수정 
+# Refactor : 리팩토링
+# Test : 테스트
+# Chore : 기타 변경사항
+#####
+
+# Optional - Body
+# Required - Task ID
