@@ -64,3 +64,7 @@ Desktop.ini
 # Gradle local caches (gradle 캐시 중복 방지)
 gradle/
 !gradle/wrapper/gradle-wrapper.properties
+
+# redis
+*.rdb
+redis-data/
