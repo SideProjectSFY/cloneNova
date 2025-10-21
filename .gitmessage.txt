@@ -1,8 +1,7 @@
-Type : Subject 
+Type : Subject #N
 
-- Summary 
-
-# 아래 주석은 커밋 메시지 작성 시 참고 후 지우고 push 
+- Summary
+# 아래 주석은 커밋 메시지 작성 시 참고 후 지우고 push
 # Required - Type: Subject
 
 # Type : Feat|Fix|Refactor|Test|Chore
@@ -10,8 +9,8 @@ Type : Subject
 # Summary : Commit에 대한 요약
 
 #예시)
-# feat: 로그인 API 구현
-# fix: 회원가입 시 비밀번호 검증 오류 수정
+# Feat: 로그인 API 구현 #n
+# Fix: 회원가입 시 비밀번호 검증 오류 수정
 
 # -------------------------
 # 제목(Subject): 50자 이내 요약 (명령문 형태)
