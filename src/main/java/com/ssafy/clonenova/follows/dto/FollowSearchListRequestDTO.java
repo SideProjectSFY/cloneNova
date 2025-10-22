@@ -1,6 +1,5 @@
 package com.ssafy.clonenova.follows.dto;
 
-import com.ssafy.clonenova.follows.entity.Follows;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
