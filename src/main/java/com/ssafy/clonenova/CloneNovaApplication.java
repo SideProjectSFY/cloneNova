@@ -1,4 +1,4 @@
-package com.ssafy.cloneNova;
+package com.ssafy.clonenova;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
