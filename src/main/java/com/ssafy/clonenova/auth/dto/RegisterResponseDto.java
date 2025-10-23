@@ -1,4 +1,4 @@
-package com.ssafy.clonenova.users.dto;
+package com.ssafy.clonenova.auth.dto;
 
 public class RegisterResponseDto {
     
