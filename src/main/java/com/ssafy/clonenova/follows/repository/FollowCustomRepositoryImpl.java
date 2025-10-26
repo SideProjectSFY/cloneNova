@@ -9,8 +9,10 @@ import com.ssafy.clonenova.follows.entity.Follows;
 import com.ssafy.clonenova.follows.entity.QFollows;
 import com.ssafy.clonenova.follows.entity.QUser;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -21,10 +23,13 @@ import java.util.List;
 public class FollowCustomRepositoryImpl implements FollowCustomRepository{
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final EntityManager entityManager;
+
     // DB 와 매핑된 entity 클래스인 QClass 객체 생성
     private final QFollows qFollows = QFollows.follows;
     private final QFollows targetF = new QFollows("targetF");
     private final QUser qUser = QUser.user;
+    private final LocalContainerEntityManagerFactoryBean entityManagerFactory2;
 
     @Override
     public List<FollowSearchListResponseDTO> findFollowerList(String userId, @Nullable String keyword) {
@@ -82,30 +87,59 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
                 .fetch();
     }
 
+    @Transactional
     @Override
-    public void addFollow(String fromUserId, String toUserId) {
-        Follows existing = jpaQueryFactory
+    public Follows addFollow(String fromUserId, String toUserId) {
+        return jpaQueryFactory
                 .selectFrom(qFollows)
                 .where(qFollows.fromUserId.eq(fromUserId)
                         .and(qFollows.toUserId.eq(toUserId))
                         .and(qFollows.deletedAt.isNotNull()))
                 .fetchOne();
 
-        // 객체가 비어있다면 첫 팔로우 추가
-        if(ObjectUtils.isEmpty(existing)) {
-            jpaQueryFactory
-                    .insert(qFollows)
-                    .columns(qFollows.fromUserId, qFollows.toUserId)
-                    .execute();
-        }
-        else if(existing.getDeletedAt() != null) {
-            // 비어있지않다면 한번 언팔한 사이로 세팅값 변경
-            // -> JPA 필드 변경 감지하여 자동 쿼리 호출됨
-            existing.restore();
-        }
+        // 첫 팔로우
+//        if(ObjectUtils.isEmpty(existing)) {
+//            Follows newFollow = Follows.builder()
+//                    .fromUserId(fromUserId)
+//                    .toUserId(toUserId)
+//                    .build();
+//
+//            // 영속성 컨텍스트에 등록 (insert 예약)
+//            // 커밋 시점에 실제 insert 쿼리 실행
+//            entityManager.persist(newFollow);
+//
+//            return FollowResponseDTO.builder()
+//                    .followId(newFollow.getId())
+//                    .fromUserId(newFollow.getFromUserId())
+//                    .toUserId(newFollow.getToUserId())
+//                    .build();
+//
+//        }
+//        // 과거에 언팔 -> 다시 팔로우 복원
+//        else if(existing.getDeletedAt() != null) {
+//            // 비어있지않다면 한번 언팔한 사이로 세팅값 변경
+//            // -> JPA 필드 변경 감지하여 자동 쿼리 호출됨
+//            existing.restore();
+//
+//            return FollowResponseDTO.builder()
+//                    .followId(existing.getId())
+//                    .fromUserId(existing.getFromUserId())
+//                    .toUserId(existing.getToUserId())
+//                    .build();
+//        }
+//        // 이미 팔로우 중
+//        else {
+//            return FollowResponseDTO.builder()
+//                    .followId(existing.getId())
+//                    .fromUserId(existing.getFromUserId())
+//                    .toUserId(existing.getToUserId())
+//                    .build();
+//        }
+
 
     }
 
+    @Transactional
     @Override
     public void cancelFollow(String fromUserId, String toUserId) {
         // 언팔 시 deletedAt 컬럼에 현재 시각 세팅

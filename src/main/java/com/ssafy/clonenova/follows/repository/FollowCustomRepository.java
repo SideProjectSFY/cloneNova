@@ -1,6 +1,7 @@
 package com.ssafy.clonenova.follows.repository;
 
 import com.ssafy.clonenova.follows.dto.FollowSearchListResponseDTO;
+import com.ssafy.clonenova.follows.entity.Follows;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
@@ -29,9 +30,10 @@ public interface FollowCustomRepository {
      * 팔로우 추가
      *
      * @param fromUserId 사용자 ID
-     * @param toUserId 타겟 사용자 ID 검색
-     * */
-    void addFollow(String fromUserId, String toUserId);
+     * @param toUserId   타겟 사용자 ID 검색
+     * @return
+     */
+    Follows addFollow(String fromUserId, String toUserId);
 
     /**
      * 팔로우 취소
