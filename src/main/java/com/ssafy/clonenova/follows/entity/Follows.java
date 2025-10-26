@@ -36,4 +36,9 @@ public class Follows {
         this.toUserId = toUserId;
         this.deletedAt = deletedAt;
     }
+
+    public void restore() {
+        this.deletedAt = null;
+        this.createdAt = LocalDateTime.now();
+    }
 }
