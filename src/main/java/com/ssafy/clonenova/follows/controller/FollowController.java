@@ -55,8 +55,8 @@ public class FollowController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "4101", description = "이미 팔로우중인 상태"),
     })
-    @PostMapping("/")
-    public ResponseEntity<ResultVO<FollowResponseDTO>> follow(@ModelAttribute FollowRequestDTO requestDTO) throws Exception {
+    @PostMapping
+    public ResponseEntity<ResultVO<FollowResponseDTO>> follow(@RequestBody FollowRequestDTO requestDTO) throws Exception {
 
         FollowResponseDTO result = followService.follow(requestDTO);
         return ResponseEntity.ok(ResultVO.success(result));
@@ -68,8 +68,8 @@ public class FollowController {
             @Parameter(name = "fromUserId", description = "로그인한 사용자 id(pk) -> 추후 JWT 로 얻을 예정!", required = true),
             @Parameter(name = "toUserId", description = "팔로우할 타겟 사용자 id(pk)", required = true),
     })
-    @PutMapping("/")
-    public ResponseEntity<ResultVO<Void>> unfollow(@ModelAttribute FollowRequestDTO requestDTO) {
+    @PutMapping
+    public ResponseEntity<ResultVO<Void>> unfollow(@RequestBody FollowRequestDTO requestDTO) {
         followService.unfollow(requestDTO);
 
         return ResponseEntity.ok(ResultVO.success(null));

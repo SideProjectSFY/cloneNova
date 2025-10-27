@@ -41,7 +41,7 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
                         qUser.email,
                         qUser.nickname,
                         Expressions.booleanTemplate(
-                                "CASE WHEN {0} IS NOT NULL AND {1} IS NULL" +
+                                "CASE WHEN {0} IS NOT NULL AND {1} IS NULL " +
                                         "THEN TRUE ELSE FALSE END",
                                 targetF.id,
                                 targetF.deletedAt
@@ -69,7 +69,7 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
                         qUser.email,
                         qUser.nickname,
                         Expressions.booleanTemplate(
-                                "CASE WHEN {0} IS NOT NULL AND {1} IS NULL" +
+                                "CASE WHEN {0} IS NOT NULL AND {1} IS NULL " +
                                         "THEN TRUE ELSE FALSE END",
                                 targetF.id,
                                 targetF.deletedAt

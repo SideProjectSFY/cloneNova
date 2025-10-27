@@ -1,12 +1,9 @@
 package com.ssafy.clonenova.follows.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class FollowSearchListRequestDTO {
 
     // TODO : JWT 도입 후 토큰 정보에서 로그인 사용자 ID 뽑아올 예정

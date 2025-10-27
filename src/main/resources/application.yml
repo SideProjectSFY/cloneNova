@@ -3,6 +3,12 @@ spring:
     name: clonenova
   profiles :
     active: local
+  jpa:
+    show-sql: true                  # 콘솔에 SQL 출력
+    properties:
+      hibernate:
+        format_sql : true           # SQL 예쁘게 출력
+        highlight_sql : true        # SQL 컬러 출력 (Springboot 3.0 이상)
 
   #spring-doc
 

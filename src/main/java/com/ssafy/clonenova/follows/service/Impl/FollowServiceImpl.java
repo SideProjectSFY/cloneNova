@@ -15,11 +15,13 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
+@Transactional
 public class FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
@@ -33,7 +35,6 @@ public class FollowServiceImpl implements FollowService {
         String keyword = requestDTO.getKeyword();
         // TODO : Type null 체크 필요
         String type = requestDTO.getType();
-        log.info("type : " + type);
 
         if("follower".equalsIgnoreCase(type)) {
             return followRepository.findFollowerList(userId, keyword);
@@ -56,8 +57,9 @@ public class FollowServiceImpl implements FollowService {
         // 첫 팔로우
         if(ObjectUtils.isEmpty(existing)) {
             Follows newFollow = Follows.builder()
-                    .fromUserId(existing.getFromUserId())
-                    .toUserId(existing.getToUserId())
+                    .fromUserId(fromUserId)
+                    .toUserId(toUserId)
+                    .createdAt(LocalDateTime.now())
                     .build();
 
             // 영속성 컨텍스트에 등록 (insert 예약)

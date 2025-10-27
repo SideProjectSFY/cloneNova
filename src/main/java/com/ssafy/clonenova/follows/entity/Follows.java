@@ -31,9 +31,10 @@ public class Follows {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Follows(String fromUserId, String toUserId, LocalDateTime deletedAt) {
+    public Follows(String fromUserId, String toUserId, LocalDateTime createdAt,LocalDateTime deletedAt) {
         this.fromUserId = fromUserId;
         this.toUserId = toUserId;
+        this.createdAt = createdAt;
         this.deletedAt = deletedAt;
     }
 
