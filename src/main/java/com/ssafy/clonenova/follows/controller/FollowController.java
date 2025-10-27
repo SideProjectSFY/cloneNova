@@ -9,18 +9,22 @@ import com.ssafy.clonenova.follows.service.FollowService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "팔로우 & 팔로잉", description = "팔로우 & 팔로잉 기능 API")
 @RestController
 @RequestMapping("/follows")
+@Slf4j
 @RequiredArgsConstructor
 public class FollowController {
-
-    // TODO :  서비스 로직 작성 후 추가 작성 필요
 
     private final FollowService followService;
 
@@ -30,14 +34,15 @@ public class FollowController {
             @Parameter(name = "type", description = "타입", example = "follower / following", required = true),
             @Parameter(name = "keyword", description = "닉네임 기반 검색 키워드", example = "wangwang"),
     })
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "성공"),
-//            @ApiResponse(responseCode = "403", description = "인증 불일치"),
-//            @ApiResponse(responseCode = "5001", description = "조회된 결과 없음")
-//    })
-    @GetMapping("/")
-    public ResponseEntity<ResultVO<FollowSearchListResponseDTO>> getFollowList(@ModelAttribute FollowSearchListRequestDTO requestDTO) {
-        return ResponseEntity.ok(ResultVO.success(null));
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "4002", description = "타입 불일치"),
+            @ApiResponse(responseCode = "4100", description = "타입 값이 null"),
+    })
+    @GetMapping
+    public ResponseEntity<ResultVO<List<FollowSearchListResponseDTO>>> getFollowList(@ModelAttribute FollowSearchListRequestDTO requestDTO) throws Exception {
+        List<FollowSearchListResponseDTO> result = followService.getFollowList(requestDTO);
+        return ResponseEntity.ok(ResultVO.success(result));
     }
 
 
@@ -46,9 +51,15 @@ public class FollowController {
             @Parameter(name = "fromUserId", description = "로그인한 사용자 id(pk) -> 추후 JWT 로 얻을 예정!", required = true),
             @Parameter(name = "toUserId", description = "팔로우할 타겟 사용자 id(pk)", required = true),
     })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "4101", description = "이미 팔로우중인 상태"),
+    })
     @PostMapping("/")
-    public ResponseEntity<ResultVO<FollowResponseDTO>> follow(@ModelAttribute FollowRequestDTO requestDTO) {
-        return ResponseEntity.ok(ResultVO.success(null));
+    public ResponseEntity<ResultVO<FollowResponseDTO>> follow(@ModelAttribute FollowRequestDTO requestDTO) throws Exception {
+
+        FollowResponseDTO result = followService.follow(requestDTO);
+        return ResponseEntity.ok(ResultVO.success(result));
     }
 
 
@@ -58,7 +69,9 @@ public class FollowController {
             @Parameter(name = "toUserId", description = "팔로우할 타겟 사용자 id(pk)", required = true),
     })
     @PutMapping("/")
-    public ResponseEntity<ResultVO<Void>> unfollow(@ModelAttribute FollowSearchListRequestDTO requestDTO) {
+    public ResponseEntity<ResultVO<Void>> unfollow(@ModelAttribute FollowRequestDTO requestDTO) {
+        followService.unfollow(requestDTO);
+
         return ResponseEntity.ok(ResultVO.success(null));
     }
 }

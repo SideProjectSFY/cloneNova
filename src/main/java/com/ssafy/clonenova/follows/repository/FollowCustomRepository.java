@@ -33,7 +33,7 @@ public interface FollowCustomRepository {
      * @param toUserId   타겟 사용자 ID 검색
      * @return
      */
-    Follows addFollow(String fromUserId, String toUserId);
+    Follows findIsFollowCheck(String fromUserId, String toUserId);
 
     /**
      * 팔로우 취소

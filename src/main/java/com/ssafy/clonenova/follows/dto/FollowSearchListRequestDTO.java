@@ -1,10 +1,11 @@
 package com.ssafy.clonenova.follows.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class FollowSearchListRequestDTO {
 
@@ -13,10 +14,4 @@ public class FollowSearchListRequestDTO {
     private String type;    // follower or following
     private String keyword; // 검색 시 사용 - 타겟 nickname
 
-    @Builder
-    public FollowSearchListRequestDTO(String userId, String type, String keyword) {
-        this.userId = userId;
-        this.type = type;
-        this.keyword = keyword;
-    }
 }

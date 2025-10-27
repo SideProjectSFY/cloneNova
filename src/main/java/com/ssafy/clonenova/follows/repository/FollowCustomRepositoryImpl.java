@@ -89,7 +89,7 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
 
     @Transactional
     @Override
-    public Follows addFollow(String fromUserId, String toUserId) {
+    public Follows findIsFollowCheck(String fromUserId, String toUserId) {
         return jpaQueryFactory
                 .selectFrom(qFollows)
                 .where(qFollows.fromUserId.eq(fromUserId)
