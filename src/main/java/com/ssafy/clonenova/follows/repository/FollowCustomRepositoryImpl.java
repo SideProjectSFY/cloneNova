@@ -9,10 +9,8 @@ import com.ssafy.clonenova.follows.entity.Follows;
 import com.ssafy.clonenova.follows.entity.QFollows;
 import com.ssafy.clonenova.follows.entity.QUser;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
