@@ -23,13 +23,11 @@ import java.util.List;
 public class FollowCustomRepositoryImpl implements FollowCustomRepository{
 
     private final JPAQueryFactory jpaQueryFactory;
-    private final EntityManager entityManager;
 
     // DB 와 매핑된 entity 클래스인 QClass 객체 생성
     private final QFollows qFollows = QFollows.follows;
     private final QFollows targetF = new QFollows("targetF");
     private final QUser qUser = QUser.user;
-    private final LocalContainerEntityManagerFactoryBean entityManagerFactory2;
 
     @Override
     public List<FollowSearchListResponseDTO> findFollowerList(String userId, @Nullable String keyword) {
