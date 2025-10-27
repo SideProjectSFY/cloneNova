@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>PortOne 결제 테스트 (Multi PG)</title>
+  <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+  <style>
+    body { font-family: system-ui; padding: 40px; }
+    button { margin: 6px; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; }
+    .inicis { background-color: #007aff; color: white; }
+    .kakao { background-color: #fbe300; }
+    .toss { background-color: #0064ff; color: white; }
+  </style>
+</head>
+<body>
+  <h2>🧾 PortOne 다중 결제 테스트</h2>
+  <button class="inicis" onclick="requestPay('html5_inicis', 'card')">이니시스 카드결제</button>
+  <button class="kakao" onclick="requestPay('kakaopay', 'card')">카카오페이</button>
+  <button class="toss" onclick="requestPay('uplus', 'card')">토스페이</button>
+
+  <script>
+    const IMP = window.IMP;
+    IMP.init("가맹점코드를입력"); // 가맹점 코드
+
+    function requestPay(pg, pay_method) {
+      const merchantUid = "TEST-" + Date.now();
+      const amount = 1000;
+
+      console.log(`💳 요청 PG: ${pg}, 금액: ${amount}`);
+
+      IMP.request_pay({
+        pg: pg,
+        pay_method: pay_method,
+        merchant_uid: merchantUid,
+        name: "테스트 상품",
+        amount: amount,
+        buyer_email: "test@example.com",
+        buyer_name: "김싸피",
+        buyer_tel: "01012345678"
+      }, function (rsp) {
+        if (rsp.success) {
+          alert("✅ 결제 성공!\nimp_uid: " + rsp.imp_uid);
+          console.log("✅ 결제 결과:", rsp);
+        } else {
+          alert("❌ 결제 실패: " + rsp.error_msg);
+          console.error("❌ 실패 응답:", rsp);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
