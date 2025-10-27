@@ -25,8 +25,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     /**
      * [PF01] 결제 준비 (주문 생성)
-     * - 서버가 merchant_uid(= pgTxId)를 발급하고 READY 상태로 저장
-     * - 프론트가 결제창 호출에 필요한 pgTxId, amount 반환
      */
     @Override
     @Transactional
@@ -39,7 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .productId(request.getProductId())
                 .userId(request.getUserId())
                 .amount(request.getAmount())
-                .pgTxId(merchantUid)          // 상점 주문번호
+                .pgTxId(merchantUid)          // 주문번호
                 .portPayId("IMP_PENDING")     // 결제 전 임시
                 .status(PaymentStatus.READY)
                 .createdAt(LocalDateTime.now())
@@ -57,17 +55,16 @@ public class PaymentServiceImpl implements PaymentService {
      * [PF02] 결제 완료 및 검증
      * - PortOne imp_uid로 결제 단건 조회
      * - merchant_uid(pgTxId)와 금액 교차 검증
-     * - 상태/PG정보/imp_uid 반영 후 Completed 응답 반환
      */
     @Override
     @Transactional
     public PaymentResponse.Complete complete(PaymentRequest.Complete request) {
 
-        // PortOne 조회 (신뢰 소스)
+        // PortOne 조회 
         Map<String, Object> po = portOneClient.getPaymentInfo(request.getPortPayId());
 
         String impUid = (String) po.get("imp_uid");              // PortOne 결제 고유 ID
-        String merchantUid = (String) po.get("merchant_uid");    // 우리 상점 주문번호
+        String merchantUid = (String) po.get("merchant_uid");    // 주문번호
         String pgTid = (String) po.get("pg_tid");
         String pgProvider = (String) po.get("pg_provider");
         String statusRaw = (String) po.get("status");
@@ -75,7 +72,6 @@ public class PaymentServiceImpl implements PaymentService {
                 ? null
                 : ((Number) po.get("amount")).intValue();
 
-        // PortOne paid_at이 epoch seconds라면 변환 (없으면 null)
         LocalDateTime paidAt = null;
         Object paidAtRaw = po.get("paid_at");
         if (paidAtRaw instanceof Number) {
@@ -86,9 +82,9 @@ public class PaymentServiceImpl implements PaymentService {
             );
         }
 
-        // 우리 DB 결제 찾기 (merchant_uid = pgTxId)
+        // DB 내 결제 찾기 (merchant_uid = pgTxId)
         Payment payment = paymentRepository.findByPgTxId(merchantUid)
-                .orElseThrow(() -> new IllegalArgumentException("해당 merchant_uid의 결제가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("결제가 존재하지 않습니다."));
 
         // 금액 검증
         if (paidAmount == null || !payment.getAmount().equals(paidAmount)) {
@@ -101,16 +97,15 @@ public class PaymentServiceImpl implements PaymentService {
                 mapped,
                 pgProvider,
                 pgTid,
-                request.getPortPayId()        // imp_uid를 우리 필드명인 portPayId로 보관
+                request.getPortPayId()        // (포트원)imp_uid를 portPayId로 보관
         );
 
-        // 응답 DTO 구성 (네 스펙에 맞춰 필드 채움)
         return PaymentResponse.Complete.builder()
                 .id(payment.getId())
                 .orderId(payment.getOrderId())
                 .productId(payment.getProductId())
                 .userId(payment.getUserId())
-                .portPayId(impUid)            // 응답에는 우리 필드명(portPayId)로 내려줌
+                .portPayId(impUid)           
                 .errorCode(payment.getErrorCode())
                 .errorMessage(payment.getErrorMessage())
                 .pgProvider(pgProvider)
