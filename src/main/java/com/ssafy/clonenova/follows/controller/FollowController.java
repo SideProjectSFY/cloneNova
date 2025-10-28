@@ -18,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Tag(name = "팔로우 & 팔로잉", description = "팔로우 & 팔로잉 기능 API")
 @RestController
 @RequestMapping("/follows")

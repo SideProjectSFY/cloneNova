@@ -1,11 +1,7 @@
 package com.ssafy.clonenova.follows.dto;
 
-import com.ssafy.clonenova.common.ScrollResponseDTO;
-import jakarta.annotation.Nullable;
 import lombok.*;
-import nonapi.io.github.classgraph.fileslice.Slice;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
+
 
 @Getter
 @AllArgsConstructor
