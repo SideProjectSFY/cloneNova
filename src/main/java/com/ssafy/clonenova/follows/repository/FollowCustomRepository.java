@@ -3,6 +3,7 @@ package com.ssafy.clonenova.follows.repository;
 import com.ssafy.clonenova.follows.dto.FollowSearchListResponseDTO;
 import com.ssafy.clonenova.follows.entity.Follows;
 import jakarta.annotation.Nullable;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface FollowCustomRepository {
      * @param keyword 타겟 닉네임 검색 (null 허용)
      * @return 사용자를 팔로우한 유저 리스트
      * */
-    List<FollowSearchListResponseDTO> findFollowerList(String userId, @Nullable String keyword);
+    List<FollowSearchListResponseDTO> findFollowerList(String userId, @Nullable String keyword, @Nullable Long lastId, int size);
 
     /**
      * 사용자의 팔로잉 목록 조회
@@ -24,7 +25,7 @@ public interface FollowCustomRepository {
      * @param keyword 타겟 닉네임 검색 (null 허용)
      * @return 사용자가 팔로잉한 유저 리스트
      * */
-    List<FollowSearchListResponseDTO> findFollowingList(String userId, @Nullable String keyword);
+    List<FollowSearchListResponseDTO> findFollowingList(String userId, @Nullable String keyword, @Nullable Long lastId, int size);
 
     /**
      * 팔로우 추가

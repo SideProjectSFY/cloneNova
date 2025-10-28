@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FollowSearchListResponseDTO {
 
+    private Long id;
     private String userId;
     private String email;
     private String nickname;
@@ -15,9 +16,10 @@ public class FollowSearchListResponseDTO {
 //    private String avatarFilePath;     // 프로필이미지경로
 
     @Builder
-    public FollowSearchListResponseDTO(String userId, String email, String nickname, boolean isFollowingBack
+    public FollowSearchListResponseDTO(Long id,String userId, String email, String nickname, boolean isFollowingBack
 //            , String avatarFilePath
     ) {
+        this.id = id;
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;

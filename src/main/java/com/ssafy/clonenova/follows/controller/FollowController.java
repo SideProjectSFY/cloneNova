@@ -1,6 +1,7 @@
 package com.ssafy.clonenova.follows.controller;
 
 import com.ssafy.clonenova.common.ResultVO;
+import com.ssafy.clonenova.common.ScrollResponseDTO;
 import com.ssafy.clonenova.follows.dto.FollowRequestDTO;
 import com.ssafy.clonenova.follows.dto.FollowResponseDTO;
 import com.ssafy.clonenova.follows.dto.FollowSearchListRequestDTO;
@@ -33,15 +34,16 @@ public class FollowController {
             @Parameter(name = "userId", description = "로그인한 사용자 id(pk) -> 추후 JWT 로 얻을 예정!", required = true),
             @Parameter(name = "type", description = "타입", example = "follower / following", required = true),
             @Parameter(name = "keyword", description = "닉네임 기반 검색 키워드", example = "wangwang"),
+            @Parameter(name = "lastId", description = "마지막으로 받은 followId", example = "1"),
+            @Parameter(name = "size", description = "가져올 데이터 개수", example = "10"),
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "4002", description = "타입 불일치"),
-            @ApiResponse(responseCode = "4100", description = "타입 값이 null"),
+            @ApiResponse(responseCode = "4002", description = "타입 불일치 or 타입 null"),
     })
     @GetMapping
-    public ResponseEntity<ResultVO<List<FollowSearchListResponseDTO>>> getFollowList(@ModelAttribute FollowSearchListRequestDTO requestDTO) throws Exception {
-        List<FollowSearchListResponseDTO> result = followService.getFollowList(requestDTO);
+    public ResponseEntity<ResultVO<ScrollResponseDTO<FollowSearchListResponseDTO>>> getFollowList(@ModelAttribute FollowSearchListRequestDTO requestDTO) throws Exception {
+        ScrollResponseDTO<FollowSearchListResponseDTO> result = followService.getFollowList(requestDTO);
         return ResponseEntity.ok(ResultVO.success(result));
     }
 

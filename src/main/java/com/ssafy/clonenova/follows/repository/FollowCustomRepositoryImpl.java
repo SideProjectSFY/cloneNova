@@ -11,6 +11,7 @@ import com.ssafy.clonenova.follows.entity.QUser;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class FollowCustomRepositoryImpl implements FollowCustomRepository{
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -28,11 +30,12 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
     private final QUser qUser = QUser.user;
 
     @Override
-    public List<FollowSearchListResponseDTO> findFollowerList(String userId, @Nullable String keyword) {
+    public List<FollowSearchListResponseDTO> findFollowerList(String userId, @Nullable String keyword, @Nullable Long lastId, int size) {
         // follows 와 user 조인
         // keyword 가 존재시 nickname Like 검색 조건 추가
         return jpaQueryFactory
                 .select(Projections.constructor(FollowSearchListResponseDTO.class,
+                        qFollows.id,
                         qFollows.fromUserId.as("userId"),
                         qUser.email,
                         qUser.nickname,
@@ -50,17 +53,21 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
                     .and(qFollows.toUserId.eq(targetF.fromUserId)))
                 .where(qFollows.toUserId.eq(userId)
                         .and(qFollows.deletedAt.isNull())
-                        .and(keywordCondition(keyword)))
+                        .and(keywordCondition(keyword))
+                        .and(cursorCondition(lastId))
+                        )
                 .orderBy(qFollows.createdAt.desc())
+                .limit(size)
                 .fetch();
     }
 
     @Override
-    public List<FollowSearchListResponseDTO> findFollowingList(String userId, @Nullable String keyword) {
+    public List<FollowSearchListResponseDTO> findFollowingList(String userId, @Nullable String keyword, Long lastId, int size) {
         // follows 와 user 조인
         // keyword 가 존재시 nickname Like 검색 조건 추가
         return jpaQueryFactory
                 .select(Projections.constructor(FollowSearchListResponseDTO.class,
+                        qFollows.id,
                         qFollows.toUserId.as("userId"),
                         qUser.email,
                         qUser.nickname,
@@ -78,8 +85,10 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
                         .and(qFollows.toUserId.eq(targetF.fromUserId)))
                 .where(qFollows.fromUserId.eq(userId)
                         .and(qFollows.deletedAt.isNull())
-                        .and(keywordCondition(keyword)))
+                        .and(keywordCondition(keyword))
+                        .and(cursorCondition(lastId)))
                 .orderBy(qFollows.createdAt.desc())
+                .limit(size)
                 .fetch();
     }
 
@@ -152,5 +161,10 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository{
     private BooleanExpression keywordCondition(String keyword) {
         return (keyword == null || keyword.isBlank())
                 ? null : qUser.nickname.containsIgnoreCase(keyword);
+    }
+
+    private BooleanExpression cursorCondition(Long lastId) {
+        // lt - 왼쪽 필드가 "값"보다 작은 것에 대한 쿼리 (id > lastId)
+        return lastId != null ? qFollows.id.lt(lastId) : null;
     }
 }

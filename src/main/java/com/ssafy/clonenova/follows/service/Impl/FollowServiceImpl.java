@@ -1,6 +1,7 @@
 package com.ssafy.clonenova.follows.service.Impl;
 
 import com.ssafy.clonenova.common.ErrorCode;
+import com.ssafy.clonenova.common.ScrollResponseDTO;
 import com.ssafy.clonenova.follows.dto.FollowRequestDTO;
 import com.ssafy.clonenova.follows.dto.FollowResponseDTO;
 import com.ssafy.clonenova.follows.dto.FollowSearchListRequestDTO;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,20 +31,33 @@ public class FollowServiceImpl implements FollowService {
 
     @Transactional(readOnly = true) // 불필요한 flush/더티체킹이 사라져서 조회 성능이 개선됨
     @Override
-    public List<FollowSearchListResponseDTO> getFollowList(FollowSearchListRequestDTO requestDTO) throws Exception {
+    public ScrollResponseDTO<FollowSearchListResponseDTO> getFollowList(FollowSearchListRequestDTO requestDTO) throws Exception {
+
+
+        int size = (requestDTO.getSize() == null || requestDTO.getSize() <= 0)
+                ? 10 : requestDTO.getSize();
+
         // TODO : JWT 통해서 로그인한 사용자 id(pk) 가져올 예정
         String userId = requestDTO.getUserId();
         String keyword = requestDTO.getKeyword();
-        // TODO : Type null 체크 필요
         String type = requestDTO.getType();
 
+        List<FollowSearchListResponseDTO> resultList;
+
         if("follower".equalsIgnoreCase(type)) {
-            return followRepository.findFollowerList(userId, keyword);
+            resultList =  followRepository.findFollowerList(userId, keyword, requestDTO.getLastId(), size);
+            log.info(resultList.toString());
         } else if("following".equalsIgnoreCase(type)){
-            return followRepository.findFollowingList(userId, keyword);
+            resultList =  followRepository.findFollowingList(userId, keyword, requestDTO.getLastId(), size);
         } else {
             throw new Exception(String.valueOf(ErrorCode.INVALID_TYPE_VALUE));
         }
+
+        boolean hasNext = resultList.size() == size;
+        Long nextCursor = hasNext ? resultList.get(resultList.size() - 1).getId() : null;
+
+        return new ScrollResponseDTO<>(resultList, nextCursor, hasNext);
+
     }
 
     @Override
