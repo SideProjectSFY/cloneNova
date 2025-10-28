@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FollowRepository extends JpaRepository<Follows, Long>, FollowCustomRepository {
 
-
+    long countByToUserIdAndDeletedAtIsNull(String toUserId);
+    long countByFromUserIdAndDeletedAtIsNull(String fromUserId);
 }
