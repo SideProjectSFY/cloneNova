@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 public class GameResponseDTO {
@@ -13,10 +13,10 @@ public class GameResponseDTO {
     @AllArgsConstructor
     @Builder
     public static class Result {
-        private static Long typingRecordId;
-        private static Double typingSpeed;
-        private static LocalDateTime recordedAt;
+        private Long typingRecordId;
+        private Double typingSpeed;
+        private LocalTime recordedAt;
 
-        private static Long productId;
+        private Long productId;
     }
 }

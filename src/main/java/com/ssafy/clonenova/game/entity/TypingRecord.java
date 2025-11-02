@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "typing_record")
@@ -28,13 +29,13 @@ public class TypingRecord {
     private Double typingSpeed;
 
     @Column(name = "recorded_at", columnDefinition = "TIME DEFAULT '00:00:00'")
-    private LocalDateTime recordedAt;
+    private LocalTime recordedAt;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @Builder
-    public TypingRecord(Long productId, String userId, double typingSpeed, LocalDateTime recordedAt, LocalDateTime createdAt) {
+    public TypingRecord(Long productId, String userId, double typingSpeed, LocalTime recordedAt, LocalDateTime createdAt) {
         this.productId = productId;
         this.userId = userId;
         this.typingSpeed = typingSpeed;
