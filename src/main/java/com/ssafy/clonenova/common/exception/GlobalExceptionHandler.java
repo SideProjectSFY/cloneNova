@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +48,70 @@ public class GlobalExceptionHandler {
                         .code(4001)
                         .message(message)
                         .data(errors)
+                        .build());
+    }
+
+    /**
+     * ResponseStatusException 처리
+     * 
+     * AuthService에서 발생하는 예외를 REST-API-SPEC.md 형식에 맞춰 변환합니다.
+     * 
+     * @param ex ResponseStatusException
+     * @return HTTP 상태 코드에 맞는 에러 응답
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ResultVO<Object>> handleResponseStatusException(ResponseStatusException ex) {
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+        String message = ex.getReason();
+        
+        // 429 Too Many Requests인 경우 retryAfter 필드 추가
+        if (status == HttpStatus.TOO_MANY_REQUESTS) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("retryAfter", 900); // 15분 (초 단위)
+            
+            log.warn("로그인 시도 초과: {}", message);
+            
+            return ResponseEntity
+                    .status(status)
+                    .body(ResultVO.<Object>builder()
+                            .code(4002)
+                            .message(message)
+                            .data(data)
+                            .build());
+        }
+        
+        // 401 Unauthorized
+        if (status == HttpStatus.UNAUTHORIZED) {
+            log.warn("인증 실패: {}", message);
+            return ResponseEntity
+                    .status(status)
+                    .body(ResultVO.<Object>builder()
+                            .code(4001)
+                            .message(message)
+                            .data(null)
+                            .build());
+        }
+        
+        // 403 Forbidden
+        if (status == HttpStatus.FORBIDDEN) {
+            log.warn("권한 없음: {}", message);
+            return ResponseEntity
+                    .status(status)
+                    .body(ResultVO.<Object>builder()
+                            .code(4003)
+                            .message(message)
+                            .data(null)
+                            .build());
+        }
+        
+        // 기타 상태 코드
+        log.warn("ResponseStatusException 발생: {} - {}", status, message);
+        return ResponseEntity
+                .status(status)
+                .body(ResultVO.<Object>builder()
+                        .code(status.value())
+                        .message(message != null ? message : status.getReasonPhrase())
+                        .data(null)
                         .build());
     }
 
