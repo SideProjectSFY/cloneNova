@@ -1,5 +1,15 @@
-{"properties": [{
-  "name": "recaptcha.secret.key",
-  "type": "java.lang.String",
-  "description": "A description for 'recaptcha.secret.key'"
-}]}
+{
+  "properties": [
+    {
+      "name": "recaptcha.secret.key",
+      "type": "java.lang.String",
+      "description": "A description for 'recaptcha.secret.key'"
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT 토큰 서명을 위한 비밀 키 (최소 32자 이상 권장)",
+      "defaultValue": "clonenova-secret-key-for-jwt-token-generation-minimum-256-bits"
+    }
+  ]
+}
