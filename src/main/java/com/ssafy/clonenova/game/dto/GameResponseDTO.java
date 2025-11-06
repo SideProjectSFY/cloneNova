@@ -19,4 +19,13 @@ public class GameResponseDTO {
 
         private Long productId;
     }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class RandomCode {
+        private Long gameId;
+        private String code;
+        private String languageName;
+    }
 }

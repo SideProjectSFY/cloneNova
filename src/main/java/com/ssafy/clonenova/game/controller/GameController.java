@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Tag(name = "게임 기능", description = "게임 결과 저장 및 랭킹, 통계 조회")
@@ -33,10 +30,17 @@ public class GameController {
     })
     @PostMapping
     public ResponseEntity<GameResponseDTO.Result> saveTypingRecordResult(@RequestBody GameRequestDTO.Result requestResultDTO) {
-        // TODO : 반환타입의 표준화된 구조 논의 후 결정 예정
         GameResponseDTO.Result result = gameService.saveTypingRecordResult(requestResultDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(result);
+    }
+
+    @Operation(summary = "게임 코드 랜덤 조회 API", description = "프로그래밍 언어 목록을 클릭하면 해당 언어로 코드를 랜덤으로 조회하는 기능")
+    @Parameter(name = "language", description = "언어", example = "JAVA", required = true)
+    @GetMapping("/random")
+    public ResponseEntity<GameResponseDTO.RandomCode> getGameRandomCode(@RequestParam("language") String languageName) {
+        GameResponseDTO.RandomCode result = gameService.getGameRandomCode(languageName);
+        return ResponseEntity.ok(result);
     }
 }
