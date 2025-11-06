@@ -1,6 +1,6 @@
 package com.ssafy.clonenova.follows.service.Impl;
 
-import com.ssafy.clonenova.common.ErrorCode;
+import com.ssafy.clonenova.exception.CustomException;
 import com.ssafy.clonenova.common.ScrollResponseDTO;
 import com.ssafy.clonenova.follows.dto.FollowRequestDTO;
 import com.ssafy.clonenova.follows.dto.FollowResponseDTO;
@@ -13,6 +13,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,13 +31,13 @@ public class FollowServiceImpl implements FollowService {
 
     @Transactional(readOnly = true) // 불필요한 flush/더티체킹이 사라져서 조회 성능이 개선됨
     @Override
-    public ScrollResponseDTO<FollowSearchListResponseDTO> getFollowList(FollowSearchListRequestDTO requestDTO) throws Exception {
+    public ScrollResponseDTO<FollowSearchListResponseDTO> getFollowList(FollowSearchListRequestDTO requestDTO) {
 
 
         int size = (requestDTO.getSize() == null || requestDTO.getSize() <= 0)
                 ? 10 : requestDTO.getSize();
 
-        // TODO : JWT 통해서 로그인한 사용자 id(pk) 가져올 예정
+        // TODO : currentUser 구현체 통해서 로그인한 사용자 id(pk) 가져올 예정
         String userId = requestDTO.getUserId();
         String keyword = requestDTO.getKeyword();
         String type = requestDTO.getType();
@@ -45,11 +46,10 @@ public class FollowServiceImpl implements FollowService {
 
         if("follower".equalsIgnoreCase(type)) {
             resultList =  followRepository.findFollowerList(userId, keyword, requestDTO.getLastId(), size);
-            log.info(resultList.toString());
         } else if("following".equalsIgnoreCase(type)){
             resultList =  followRepository.findFollowingList(userId, keyword, requestDTO.getLastId(), size);
         } else {
-            throw new Exception(String.valueOf(ErrorCode.INVALID_TYPE_VALUE));
+            throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 타입 값입니다. (follower/following만 허용)");
         }
 
         boolean hasNext = resultList.size() == size;
@@ -61,7 +61,7 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public FollowResponseDTO follow(FollowRequestDTO requestDTO) throws Exception {
-        // TODO : JWT 통해서 로그인한 사용자 id(pk) 가져올 예정
+        // TODO : currentUser 구현체 통해서 로그인한 사용자 id(pk) 가져올 예정
         String fromUserId = requestDTO.getFromUserId();
         // TODO : toUserId null 체크 필요, 진짜 존재하는 유저인지 확인필요
         String toUserId = requestDTO.getToUserId();
@@ -101,13 +101,13 @@ public class FollowServiceImpl implements FollowService {
         }
         // 이미 팔로우 중 (or errorCode 로 반환하거나)
         else {
-            throw new Exception(String.valueOf(ErrorCode.ALREADY_FOLLOWING));
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 팔로우 중인 상태입니다.");
         }
     }
 
     @Override
     public void unfollow(FollowRequestDTO requestDTO) {
-        // TODO : JWT 통해서 로그인한 사용자 id(pk) 가져올 예정
+        // TODO : currentUser 구현체 통해서 로그인한 사용자 id(pk) 가져올 예정
         String fromUserId = requestDTO.getFromUserId();
         // TODO : toUserId null 체크 필요, 진짜 존재하는 유저인지 확인 필요
         String toUserId = requestDTO.getToUserId();

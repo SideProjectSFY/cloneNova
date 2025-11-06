@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FollowRequestDTO {
 
-    // TODO : JWT 도입 후 토큰 정보에서 로그인 사용자 ID 뽑아올 예정
+    // TODO : currentUser 구현체 통해서 로그인한 사용자 id(pk) 가져올 예정
     private String fromUserId;
     private String toUserId;
 
