@@ -60,7 +60,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public FollowResponseDTO follow(FollowRequestDTO requestDTO) throws Exception {
+    public FollowResponseDTO follow(FollowRequestDTO requestDTO) {
         // TODO : currentUser 구현체 통해서 로그인한 사용자 id(pk) 가져올 예정
         String fromUserId = requestDTO.getFromUserId();
         // TODO : toUserId null 체크 필요, 진짜 존재하는 유저인지 확인필요
