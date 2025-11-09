@@ -17,7 +17,7 @@ public class GameResponseDTO {
         private Double typingSpeed;
         private LocalTime recordedAt;
 
-        private Long productId;
+        private String language;
     }
 
     @Getter
@@ -26,6 +26,16 @@ public class GameResponseDTO {
     public static class RandomCode {
         private Long gameId;
         private String code;
-        private String languageName;
+        private String language;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class Ranking {
+       private String userId;
+       private String nickName;
+       private Double typingSpeed;          // 점수
+       private int rank;
     }
 }

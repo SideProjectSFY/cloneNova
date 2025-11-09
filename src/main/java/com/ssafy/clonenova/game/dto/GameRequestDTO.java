@@ -18,17 +18,17 @@ public class GameRequestDTO {
     @Builder
     public static class Result {
         private String userId;   // TODO : 테스트용 임시 변수
-        private Long productId;
+        private String language;
         private Double typingSpeed;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
         private LocalTime recordedAt;
 
         // dto -> entity 로 바꾸는 변환 메서드 (jpa 의 경우 파라미터를 entity 만받음)
-        public TypingRecord toEntity() {
+        public TypingRecord toEntity(Long languageId) {
             return TypingRecord.builder()
                     .userId(userId)
-                    .productId(productId)
+                    .productId(languageId)
                     .typingSpeed(typingSpeed)
                     .recordedAt(recordedAt)
                     .createdAt(LocalDateTime.now())

@@ -24,7 +24,7 @@ public class GameController {
     @Operation(summary = "게임 결과 저장 API", description = "사용자가 게임한 결과를 서버로 전송하여 저장하는 기능")
     @Parameters({
             @Parameter(name = "userId", description = "로그인한 사용자 id(pk) -> 추후 받아올 예정!", required = true),
-            @Parameter(name = "productId", description = "상품Id(언어 id)", required = true),
+            @Parameter(name = "language", description = "언어", required = true, example = "JAVA"),
             @Parameter(name = "typingSpeed", description = "타이핑속도", example = "278.5"),
             @Parameter(name = "recordedAt", description = "기록시간", example = "00:27:13"),
     })
